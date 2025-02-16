@@ -32,13 +32,12 @@ public:
     }
 
 
-    void update_slice(int x, int y, bool is_alive)
+    void update_slice(int x, bool is_alive)
     {
         if (update)
             return;
-        int nx = resize(x, WIDTH);
-        int ny = resize(y, HEIGHT);
-        this->map[ny * WIDTH + nx] = is_alive;
+        int nx = resize(x, WIDTH*HEIGHT);
+        this->map[nx] = is_alive;
     }
 
     char *map_to_char()
@@ -46,7 +45,7 @@ public:
         char *char_map = new char[WIDTH * HEIGHT];
         for (int i = 0; i < WIDTH * HEIGHT; i++)
         {
-            char_map[i] = this->map[i] ? '#' : ' ';
+            char_map[i] = this->map[i] ? '#' : '-';
         }
         return char_map;
     }
