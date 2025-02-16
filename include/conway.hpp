@@ -4,8 +4,7 @@
 #define WIDTH 20
 #define HEIGHT 20
 
-int resize(int x, int max_value)
-{
+int resize(int x, int max_value){
     if (x < 0)
     {
         return max_value - (abs(x) % max_value);
@@ -18,7 +17,6 @@ int resize(int x, int max_value)
 }
 class Conway
 {
-
 public:
     bool *map;
     bool updating=false;
