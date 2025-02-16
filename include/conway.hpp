@@ -3,13 +3,6 @@
 #include <Arduino.h>
 #define WIDTH 20
 #define HEIGHT 20
-#define MAX_UPDATES 50
-
-struct Update
-{
-    int x, y;
-    bool is_alive;
-};
 
 int resize(int x, int max_value)
 {
@@ -27,8 +20,7 @@ class Conway
 {
 public:
     bool *map;
-    Update update_queue[MAX_UPDATES];
-    int update_count = 0;
+    bool update = false;
     // #  or 0
     Conway(char *initialMap)
     {
@@ -38,35 +30,17 @@ public:
             this->map[i] = initialMap[i] == '#';
         }
     }
-    /** this will be used for the server, i was thinking that i could just add this into a query
-     * that i would execute when updating the map, so i can avoid any kind of problem in the future
-     * with race conditioning
-     */
+
 
     void update_slice(int x, int y, bool is_alive)
     {
+        if (update)
+            return;
         int nx = resize(x, WIDTH);
         int ny = resize(y, HEIGHT);
-    
-        if (this->update_count >= MAX_UPDATES)
-        {
-            return; // just in case we run out of space :D
-        }
-       
-        this->update_queue[this->update_count] = {nx, ny, is_alive};
-        this->update_count++;
+        this->map[ny * WIDTH + nx] = is_alive;
     }
-    void apply_updates()
-    {
-        for (int i = 0; i < this->update_count; i++)
-        {
-            Update update_obj = this->update_queue[i];
-            int x = update_obj.x;
-            int y = update_obj.y;
-            this->map[y * WIDTH + x] = update_obj.is_alive;
-        }
-        update_count = 0;
-    }
+
     char *map_to_char()
     {
         char *char_map = new char[WIDTH * HEIGHT];
@@ -95,8 +69,9 @@ public:
     }
     void update_map()
     {
-        this->apply_updates();
+
         bool *new_map = new bool[WIDTH * HEIGHT];
+        this->update = true;
         for (int y = 0; y < HEIGHT; y++)
         {
             for (int x = 0; x < WIDTH; x++)
@@ -113,6 +88,7 @@ public:
             }
         }
         this->map = new_map;
+        this->update = false;
     }
 };
 
