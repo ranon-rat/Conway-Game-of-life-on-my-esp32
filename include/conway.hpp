@@ -1,6 +1,8 @@
 
 #include <stdlib.h>
 #include <Arduino.h>
+#include <AsyncTCP.h>
+#include <ESPAsyncWebServer.h>
 #define WIDTH 20
 #define HEIGHT 20
 
@@ -31,24 +33,25 @@ public:
         }
     }
 
-
-    void update_slice(int x, bool is_alive)
+    void update_cell(int x, bool is_alive)
     {
         if (update)
             return;
-        int nx = resize(x, WIDTH*HEIGHT);
+        int nx = resize(x, WIDTH * HEIGHT);
         this->map[nx] = is_alive;
     }
 
     char *map_to_char()
     {
-        char *char_map = new char[WIDTH * HEIGHT];
+        char *char_map = new char[WIDTH * HEIGHT + 1]; // +1 para el '\0'
         for (int i = 0; i < WIDTH * HEIGHT; i++)
         {
             char_map[i] = this->map[i] ? '#' : '-';
         }
+        char_map[WIDTH * HEIGHT] = '\0'; // Asegurar terminador
         return char_map;
     }
+
     int check_neightbours(int x, int y)
     {
         int nx = resize(x, WIDTH);
@@ -66,11 +69,14 @@ public:
         }
         return count;
     }
-    void update_map()
+    void update_map(AsyncWebSocket ws)
     {
 
         bool *new_map = new bool[WIDTH * HEIGHT];
         this->update = true;
+        if (ws.count() > 0)
+            ws.textAll("ut\0");
+
         for (int y = 0; y < HEIGHT; y++)
         {
             for (int x = 0; x < WIDTH; x++)
@@ -88,6 +94,9 @@ public:
         }
         this->map = new_map;
         this->update = false;
+
+        if (ws.count() > 0)
+            ws.textAll("uf\0");
     }
 };
 

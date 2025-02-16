@@ -1,3 +1,5 @@
+#include <Arduino.h>
+const char index_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE html>
 <html lang="en">
 
@@ -17,9 +19,8 @@
         @ranon-rat
     </footer>
     <script>
-        const loc = "192.168.100.49" // window.location.hostname
+     
 
-        const httpServer = `http://${loc}/map`
         const WIDTH = 20
         const HEIGHT = 20
         let initialMap = Array(HEIGHT * WIDTH).fill("-")
@@ -50,10 +51,11 @@
         }
         setupCheckboxes(WIDTH, HEIGHT, initialMap);
         addEventListeners();
-        fetch(`http://${loc}/map`).then(r => r.text()).then(d => updateCells(d)
-        )
-
+        updateCells("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------###------------------------------------------------------------------")
+        
     </script>
 </body>
 
 </html>
+
+)rawliteral";
