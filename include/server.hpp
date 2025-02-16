@@ -23,10 +23,7 @@ void handleWebSocketMessage(Conway *c, void *arg, uint8_t *data, size_t len)
     if (ws.count() > 0)
     {
         char *map = c->map_to_char();
-        char mapcp[WIDTH * HEIGHT + 1];
-memcpy(mapcp, map, WIDTH * HEIGHT + 1);
-        ws.textAll(mapcp);
-        delete[] map;
+        ws.textAll(map);
     }
 }
 
@@ -67,10 +64,7 @@ void StartServer(Conway *c)
     server.on("/map", [c](AsyncWebServerRequest *request)
               {
                   char *map = c->map_to_char();
-                  char mapcp[WIDTH * HEIGHT + 1];
-memcpy(mapcp, map, WIDTH * HEIGHT + 1);
-                  request->send_P(200, "text/*", mapcp);
-                  delete[] map;
+                  request->send_P(200, "text/*", map);
               });
     server.begin();
 }

@@ -1,4 +1,3 @@
-
 #include <stdlib.h>
 #include <Arduino.h>
 #include <AsyncTCP.h>
@@ -43,12 +42,12 @@ public:
 
     char *map_to_char()
     {
-        char *char_map = new char[WIDTH * HEIGHT + 1]; // +1 para el '\0'
+        static char char_map[WIDTH * HEIGHT + 1]; 
         for (int i = 0; i < WIDTH * HEIGHT; i++)
         {
             char_map[i] = this->map[i] ? '#' : '-';
         }
-        char_map[WIDTH * HEIGHT] = '\0'; // Asegurar terminador
+        char_map[WIDTH * HEIGHT] = '\0';
         return char_map;
     }
 

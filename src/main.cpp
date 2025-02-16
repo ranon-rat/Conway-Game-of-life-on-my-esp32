@@ -32,11 +32,7 @@ void loop()
   {
     lastTime = currentTime;
     conway.update_map(ws);
-    char *map = conway.map_to_char();
-    char mapcp[WIDTH * HEIGHT + 1];
-    memcpy(mapcp, map, WIDTH * HEIGHT + 1);
     if (ws.count() > 0)
-      ws.textAll(map);
-    delete[] map;
+      ws.textAll(conway.map_to_char());
   }
 }
