@@ -88,27 +88,27 @@ public:
 
 char *returnMapChar()
 {
-    String initialMap = 
-                  "00000000000000000000";
-    initialMap += "00000000000000000000";
-    initialMap += "00000000000000000000";
-    initialMap += "00000000000000000000";
-    initialMap += "0000000#000000000000";
-    initialMap += "00000000#00000000000";
-    initialMap += "000000###00000000000";
-    initialMap += "00000000000000000000";
-    initialMap += "00000000000000000000";
-    initialMap += "00000000000000000000";
-    initialMap += "00000000000000000000";
-    initialMap += "00000000000000000000";
-    initialMap += "00000000000000000000";
-    initialMap += "00000000000000000000";
-    initialMap += "00000000000000000000";
-    initialMap += "00000000000000000000";
-    initialMap += "00000000000000000000";
-    initialMap += "00000000000000000000";
-    initialMap += "00000000000000000000";
-    initialMap += "00000000000000000000";
+ String initialMap = 
+                  "--------------------";
+    initialMap += "--------------------";
+    initialMap += "--------------------";
+    initialMap += "--------------------";
+    initialMap += "-------#------------";
+    initialMap += "--------#-----------";
+    initialMap += "------###-----------";
+    initialMap += "--------------------";
+    initialMap += "--------------------";
+    initialMap += "--------------------";
+    initialMap += "--------------------";
+    initialMap += "--------------------";
+    initialMap += "--------------------";
+    initialMap += "--------------------";
+    initialMap += "--------------------";
+    initialMap += "--------------------";
+    initialMap += "--------------------";
+    initialMap += "--------------------";
+    initialMap += "--------------------";
+    initialMap += "--------------------";
 
     char *initialMapChar = new char[WIDTH * HEIGHT];
     memcpy(initialMapChar, initialMap.c_str(), WIDTH * HEIGHT);
