@@ -3,8 +3,16 @@
 #include <Arduino.h>
 #define WIDTH 20
 #define HEIGHT 20
+#define MAX_UPDATES 50
 
-int resize(int x, int max_value){
+struct Update
+{
+    int x, y;
+    bool is_alive;
+};
+
+int resize(int x, int max_value)
+{
     if (x < 0)
     {
         return max_value - (abs(x) % max_value);
@@ -19,23 +27,45 @@ class Conway
 {
 public:
     bool *map;
-    bool updating=false;
+    Update update_queue[MAX_UPDATES];
+    int update_count = 0;
     // #  or 0
     Conway(char *initialMap)
     {
         this->map = new bool[WIDTH * HEIGHT];
-        // so aqui tenemos esta parte donde copia una base :D
         for (int i = 0; i < WIDTH * HEIGHT; i++)
         {
             this->map[i] = initialMap[i] == '#';
         }
     }
-    //** esto va a ser usado desde el servidor :D */
+    /** this will be used for the server, i was thinking that i could just add this into a query
+     * that i would execute when updating the map, so i can avoid any kind of problem in the future
+     * with race conditioning
+     */
+
     void update_slice(int x, int y, bool is_alive)
     {
         int nx = resize(x, WIDTH);
         int ny = resize(y, HEIGHT);
-        map[ny * WIDTH + nx] = is_alive;
+    
+        if (this->update_count >= MAX_UPDATES)
+        {
+            return; // just in case we run out of space :D
+        }
+       
+        this->update_queue[this->update_count] = {nx, ny, is_alive};
+        this->update_count++;
+    }
+    void apply_updates()
+    {
+        for (int i = 0; i < this->update_count; i++)
+        {
+            Update update_obj = this->update_queue[i];
+            int x = update_obj.x;
+            int y = update_obj.y;
+            this->map[y * WIDTH + x] = update_obj.is_alive;
+        }
+        update_count = 0;
     }
     char *map_to_char()
     {
@@ -57,7 +87,6 @@ public:
             {
                 if (lx == 0 && ly == 0)
                     continue;
-
                 if (this->map[resize(ny + ly, HEIGHT) * WIDTH + resize(nx + lx, WIDTH)])
                     count++;
             }
@@ -66,7 +95,8 @@ public:
     }
     void update_map()
     {
-        bool *new_map=new bool[WIDTH*HEIGHT];
+        this->apply_updates();
+        bool *new_map = new bool[WIDTH * HEIGHT];
         for (int y = 0; y < HEIGHT; y++)
         {
             for (int x = 0; x < WIDTH; x++)
@@ -82,14 +112,14 @@ public:
                 new_map[y * WIDTH + x] = false;
             }
         }
-        this->map=new_map;
+        this->map = new_map;
     }
 };
 
 char *returnMapChar()
 {
- String initialMap = 
-                  "--------------------";
+    String initialMap = "";
+    initialMap += "--------------------";
     initialMap += "--------------------";
     initialMap += "--------------------";
     initialMap += "--------------------";

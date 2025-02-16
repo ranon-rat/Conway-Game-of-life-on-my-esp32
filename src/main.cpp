@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <wifiConfig.h>
 #include "conway.hpp"
 // put function declarations here:
 int myFunction(int, int);
