@@ -2,6 +2,7 @@
 #include <ESPAsyncWebServer.h>
 #include "static.hpp"
 #include "conway.hpp"
+#include "led.hpp"
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
 void handleWebSocketMessage(Conway *c, void *arg, uint8_t *data, size_t len)
@@ -16,9 +17,9 @@ void handleWebSocketMessage(Conway *c, void *arg, uint8_t *data, size_t len)
     // so with this i just move in the pointer?
     // i hope it works XD
     memcpy(msg, data + 1, len - 1);
-    Serial.println(msg);
     msg[len - 1] = '\0';
     int value = atoi(msg);
+    Serial.println(value,msg);
     c->update_cell(value, first_val);
     if (ws.count() > 0)
     {
@@ -45,6 +46,7 @@ void onEvent(Conway *c, AsyncWebSocket *server, AsyncWebSocketClient *client, Aw
     case WS_EVT_ERROR:
         break;
     }
+    turnOnLed();
 }
 void initWebSocket(Conway *c)
 {
@@ -62,13 +64,15 @@ void StartServer(Conway *c)
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Headers", "*");
 
     server.on("/", [](AsyncWebServerRequest *request)
-              { request->send_P(200, "text/html", index_html); });
+              { 
+                turnOnLed();
+                request->send_P(200, "text/html", index_html); });
     // veamos si aqui funciona
 
     server.on("/map", [c](AsyncWebServerRequest *request)
               {
+
                   String mapStr = c->map_to_string();
-                  request->send(200, "text/plain", mapStr);
-              });
+                  request->send(200, "text/plain", mapStr); });
     server.begin();
 }

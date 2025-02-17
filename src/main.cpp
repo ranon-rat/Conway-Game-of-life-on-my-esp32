@@ -3,12 +3,12 @@
 #include "wifiConfig.h"
 #include "server.hpp"
 static Conway conway(returnMapChar());
-#define FPS 1000 / 1
+#define FPS 1000 *5
 long lastTime = 0;
 
 void setup()
 {
-
+  setupLed();
   Serial.begin(115200);
   WiFi.mode(WIFI_STA);
   WiFi.begin(SSID, PASS);
