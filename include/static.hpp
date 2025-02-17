@@ -39,7 +39,7 @@ const char index_html[] PROGMEM = R"rawliteral(
 
 <body>
     <h1>
-        Conway game in my esp32
+        Conway's Game of Life on my ESP32
     </h1>
     <div id="values">
     </div>
@@ -51,7 +51,7 @@ const char index_html[] PROGMEM = R"rawliteral(
         const loc = window.location.hostname
 
         const httpServer = `http://${loc}/map`
-        const wsServer = `ws://${loc}/ws`
+        const wsServer = `${window.location.href.split("://")[0]==="https"?"wss":"ws"}://${loc}/ws`
         const WIDTH = 20
         const HEIGHT = 20
         let update = false
