@@ -86,7 +86,7 @@ const char index_html[] PROGMEM = R"rawliteral(
         setupCheckboxes(WIDTH, HEIGHT, initialMap);
         addEventListeners();
         console.log(`http://${loc}/map`)
-        fetch(`http://${loc}/map`).then(r => r.text()).then(d => updateCells(d))
+        fetch(`${window.location.href.split("://")[0]}://${loc}/map`).then(r => r.text()).then(d => updateCells(d))
         ws.onmessage = (e) => {
             if (e.data == "ut") {
                 update = true
