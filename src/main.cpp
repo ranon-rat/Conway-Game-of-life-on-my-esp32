@@ -3,7 +3,7 @@
 #include "wifiConfig.h"
 #include "server.hpp"
 static Conway conway(returnMapChar());
-#define FPS 1000 *5
+#define FPS 1000 * 5
 long lastTime = 0;
 
 void setup()
@@ -33,8 +33,6 @@ void loop()
     lastTime = currentTime;
     conway.update_map(ws);
     if (ws.count() > 0)
-    {
       ws.textAll(conway.map_to_string());
-    }
   }
 }
