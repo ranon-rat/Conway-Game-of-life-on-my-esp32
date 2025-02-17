@@ -33,7 +33,7 @@ void onEvent(Conway *c, AsyncWebSocket *server, AsyncWebSocketClient *client, Aw
     switch (type)
     {
     case WS_EVT_CONNECT:
-        Serial.printf("WebSocket client #%u connected from %s\n", client->id(), client->remoteIP().toString().c_str());
+        Serial.printf("WebSocket client #%u connected from %s\n", client->id());
         break;
     case WS_EVT_DISCONNECT:
         Serial.printf("WebSocket client #%u disconnected\n", client->id());
