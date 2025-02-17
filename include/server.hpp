@@ -19,7 +19,6 @@ void handleWebSocketMessage(Conway *c, void *arg, uint8_t *data, size_t len)
     memcpy(msg, data + 1, len - 1);
     msg[len - 1] = '\0';
     int value = atoi(msg);
-    Serial.println(value,msg);
     c->update_cell(value, first_val);
     if (ws.count() > 0)
     {
