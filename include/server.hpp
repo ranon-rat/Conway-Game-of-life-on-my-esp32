@@ -33,6 +33,7 @@ void onEvent(Conway *c, AsyncWebSocket *server, AsyncWebSocketClient *client, Aw
     switch (type)
     {
     case WS_EVT_CONNECT:
+        turnOnLed();
         Serial.printf("WebSocket client #%u\n", client->id());
         break;
     case WS_EVT_DISCONNECT:
@@ -45,7 +46,6 @@ void onEvent(Conway *c, AsyncWebSocket *server, AsyncWebSocketClient *client, Aw
     case WS_EVT_ERROR:
         break;
     }
-    turnOnLed();
 }
 void initWebSocket(Conway *c)
 {
@@ -70,7 +70,6 @@ void StartServer(Conway *c)
 
     server.on("/map", [c](AsyncWebServerRequest *request)
               {
-
                   String mapStr = c->map_to_string();
                   request->send(200, "text/plain", mapStr); });
     server.begin();
