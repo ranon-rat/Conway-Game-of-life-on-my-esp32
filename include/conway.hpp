@@ -20,12 +20,11 @@ int resize(int x, int max_value)
 class Conway
 {
 public:
-    bool *map;
+    bool map[WIDTH * HEIGHT];
     bool update = false;
     // #  or 0
     Conway(char *initialMap)
     {
-        this->map = new bool[WIDTH * HEIGHT];
         for (int i = 0; i < WIDTH * HEIGHT; i++)
         {
             this->map[i] = initialMap[i] == '#';
@@ -40,15 +39,17 @@ public:
         this->map[nx] = is_alive;
     }
 
-    char *map_to_char()
+    String map_to_string()
     {
-        static char char_map[WIDTH * HEIGHT + 1]; 
+        String result;
+        result.reserve(WIDTH * HEIGHT);  // Reservar espacio para evitar realocaciones
+        
         for (int i = 0; i < WIDTH * HEIGHT; i++)
         {
-            char_map[i] = this->map[i] ? '#' : '-';
+            result += this->map[i] ? '#' : '-';
         }
-        char_map[WIDTH * HEIGHT] = '\0';
-        return char_map;
+        
+        return result;
     }
 
     int check_neightbours(int x, int y)
@@ -68,34 +69,33 @@ public:
         }
         return count;
     }
-    void update_map(AsyncWebSocket ws)
+    void update_map(AsyncWebSocket& ws)
     {
-
-        bool *new_map = new bool[WIDTH * HEIGHT];
+        static bool new_map[WIDTH * HEIGHT];
         this->update = true;
+        
         if (ws.count() > 0)
-            ws.textAll("ut\0");
+        {
+            ws.textAll("ut");
+        }
 
         for (int y = 0; y < HEIGHT; y++)
         {
             for (int x = 0; x < WIDTH; x++)
             {
-
                 int neighbours = this->check_neightbours(x, y);
-                if ((this->map[y * WIDTH + x] && (neighbours == 2)) || neighbours == 3)
-                {
-                    new_map[y * WIDTH + x] = true;
-                    continue;
-                }
-
-                new_map[y * WIDTH + x] = false;
+                bool is_alive = this->map[y * WIDTH + x];
+                new_map[y * WIDTH + x] = (is_alive && neighbours == 2) || neighbours == 3;
             }
         }
-        this->map = new_map;
+        
+        memcpy(this->map, new_map, WIDTH * HEIGHT * sizeof(bool));
         this->update = false;
-
+        
         if (ws.count() > 0)
-            ws.textAll("uf\0");
+        {
+            ws.textAll("uf");
+        }
     }
 };
 

@@ -2,8 +2,8 @@
 #include <WiFi.h>
 #include "wifiConfig.h"
 #include "server.hpp"
-Conway conway(returnMapChar());
-int fps = 1000 / 1;
+static Conway conway(returnMapChar());
+#define FPS 1000 / 1
 long lastTime = 0;
 
 void setup()
@@ -28,11 +28,13 @@ void loop()
 
   long currentTime = millis();
   long deltaTime = currentTime - lastTime;
-  if (deltaTime >= fps)
+  if (deltaTime >= FPS)
   {
     lastTime = currentTime;
     conway.update_map(ws);
     if (ws.count() > 0)
-      ws.textAll(conway.map_to_char());
+    {
+      ws.textAll(conway.map_to_string());
+    }
   }
 }

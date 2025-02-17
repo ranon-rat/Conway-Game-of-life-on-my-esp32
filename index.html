@@ -17,12 +17,16 @@
         @ranon-rat
     </footer>
     <script>
-        const loc = "192.168.100.49" // window.location.hostname
+        const loc = "192.168.100.49" //window.location.hostname
 
         const httpServer = `http://${loc}/map`
+        const wsServer = `ws://${loc}/ws`
         const WIDTH = 20
         const HEIGHT = 20
+        let update = false
         let initialMap = Array(HEIGHT * WIDTH).fill("-")
+        const ws = new WebSocket(wsServer)
+
         function setupCheckboxes(WIDTH, HEIGHT, initialMap) {
             const valuesElement = document.getElementById("values")
             let rows = ""
@@ -44,15 +48,25 @@
         function addEventListeners() {
             Array.from(document.getElementsByClassName("cell")).map((v, i) => {
                 v.onchange = (e) => {
-                    console.log(e, i)
+                    ws.send(e.target.checked ? `t${i}` : `f${i}`)
                 }
             })
         }
         setupCheckboxes(WIDTH, HEIGHT, initialMap);
         addEventListeners();
-        fetch(`http://${loc}/map`).then(r => r.text()).then(d => updateCells(d)
-        )
-
+        console.log(`http://${loc}/map`)
+        fetch(`http://${loc}/map`).then(r => r.text()).then(d => updateCells(d))
+        ws.onmessage = (e) => {
+            if (e.data == "ut") {
+                update = true
+                return
+            }
+            if (e.data == "uf") {
+                update = false
+                return
+            }
+            updateCells(e.data)
+        }
     </script>
 </body>
 

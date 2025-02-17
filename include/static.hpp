@@ -19,8 +19,9 @@ const char index_html[] PROGMEM = R"rawliteral(
         @ranon-rat
     </footer>
     <script>
-     
+        const loc =  window.location.hostname
 
+        const httpServer = `http://${loc}/map`
         const WIDTH = 20
         const HEIGHT = 20
         let initialMap = Array(HEIGHT * WIDTH).fill("-")
@@ -51,11 +52,12 @@ const char index_html[] PROGMEM = R"rawliteral(
         }
         setupCheckboxes(WIDTH, HEIGHT, initialMap);
         addEventListeners();
-        updateCells("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------###------------------------------------------------------------------")
-        
+        console.log(`http://${loc}/map`)
+        fetch(`http://${loc}/map`).then(r => r.text()).then(d => updateCells(d)
+        )
+
     </script>
 </body>
 
 </html>
-
 )rawliteral";

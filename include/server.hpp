@@ -22,8 +22,8 @@ void handleWebSocketMessage(Conway *c, void *arg, uint8_t *data, size_t len)
     c->update_cell(value, first_val);
     if (ws.count() > 0)
     {
-        char *map = c->map_to_char();
-        ws.textAll(map);
+        String mapStr = c->map_to_string();
+        ws.textAll(mapStr);
     }
 }
 
@@ -57,14 +57,18 @@ void StartServer(Conway *c)
 {
     initWebSocket(c);
 
+    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
+    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Headers", "*");
+
     server.on("/", [](AsyncWebServerRequest *request)
               { request->send_P(200, "text/html", index_html); });
     // veamos si aqui funciona
 
     server.on("/map", [c](AsyncWebServerRequest *request)
               {
-                  char *map = c->map_to_char();
-                  request->send_P(200, "text/*", map);
+                  String mapStr = c->map_to_string();
+                  request->send(200, "text/plain", mapStr);
               });
     server.begin();
 }
